@@ -1,0 +1,161 @@
+<script>
+    //Inicializa o bootstrap modal
+    var modal = document.getElementById('myModal')
+
+    var myModal = new bootstrap.Modal(modal, {
+        keyboard: false
+    })
+
+    //Busca os dados na planilha e altera as tasks que já foram concluidas
+    google.script.run.withSuccessHandler(verificaConcluidos).getDados()
+
+    var dadosGeral;
+
+    //Função verifica as tasks concluidas e armaneza tasks em variavel
+    function verificaConcluidos(dados) {
+        dadosGeral = dados
+        lista.forEach((li) => {
+            for (let i = 0; i < dados.tasks.length; i++) {
+                //Caso a task já tenha sido conluida, a exibição dela será alterada
+                if (li.querySelector("strong").textContent == dados.tasks[i] && dados.datas[i] != "") {
+                    li.querySelector("strong").style.color = "green"
+                    li.querySelector("#done").classList.remove("displayNone")
+                    var img = li.querySelector("img")
+                    img.style.border = "solid 8px"
+                    img.style.borderColor = "green"
+                    img.style.opacity = 0.6
+                }
+            }
+        })
+        //Chama a funçao para exibição do dinheiro ganho
+        dinheiros()
+    }
+
+    //Função para exibição do dinheiro ganho (máximo 10 tasks = R$20,00)
+    function dinheiros() {
+        //Puxa o valor que foi injetado
+        let valor = parseInt(document.querySelector("#valor").textContent)
+
+        //Função para zerar um tipo de dinheiro
+        let zerado = array => array.forEach(arr => arr.innerHTML = "")
+
+        //Função para criar as imagens com as notas de dinheiro
+        let notas = (nota, vezes) => {
+            var img = ''
+            switch (nota) {
+                case 2: img = "https://www.bcb.gov.br/novasnotas/assets/img/section/2/2_front.jpg"; break;
+                case 5: img = "https://www.bcb.gov.br/novasnotas/assets/img/section/5/5_front.jpg"; break;
+                case 10: img = "https://www.bcb.gov.br/novasnotas/assets/img/section/10/10_front.jpg"; break;
+                case 20: img = "https://www.bcb.gov.br/novasnotas/assets/img/section/20/20_front.jpg"; break;
+            }
+
+            let html = '';
+            for (let i = 0; i < vezes; i++) {
+                html += '<img class="notas" src="' + img + '">'
+                if (i != vezes - 1) html += ' + '
+            }
+
+            return html
+        }
+
+        //Puxa os elementos de exibição do dinheiro
+        var h1doisReais = document.querySelector("#doisReais")
+        var h1cincoReais = document.querySelector("#cincoReais")
+        var h1dezReais = document.querySelector("#dezReais")
+        var h1vinteReais = document.querySelector("#vinteReais")
+
+        //Exibe o dinhero de acordo com o valor e trazendo equivalencias OU 
+        //para exemplificar diferentes formas de se chegar no mesmo valor
+        //obs. máx: 20
+        switch (valor) {
+            case 0: zerado(h1doisReais, h1cincoReais, h1dezReais, h1vinteReais); break;
+            case 2: h1doisReais.innerHTML = notas(2, 1); break;
+            case 4: h1doisReais.innerHTML = notas(2, 2); break;
+            case 6: h1doisReais.innerHTML = notas(2, 3); break;
+            case 8: h1doisReais.innerHTML = notas(2, 4); break;
+            case 10:
+                h1doisReais.innerHTML = notas(2, 5) + "<br>OU";
+                h1cincoReais.innerHTML = notas(5, 2) + "<br>OU";
+                h1dezReais.innerHTML = notas(10, 1);
+                break;
+            case 12:
+                h1doisReais.innerHTML = notas(2, 5) + " +<br>" + notas(2, 1) + "<br>OU";
+                h1cincoReais.innerHTML = notas(5, 2) + " + " + notas(2, 1) + "<br>OU";
+                h1dezReais.innerHTML = notas(10, 1) + " + " + notas(2, 1);
+                break;
+            case 14:
+                h1doisReais.innerHTML = notas(2, 5) + " +<br>" + notas(2, 2) + "<br>OU";
+                h1cincoReais.innerHTML = notas(5, 2) + " + " + notas(2, 2) + "<br>OU";
+                h1dezReais.innerHTML = notas(10, 1) + " + " + notas(2, 2);
+                break;
+            case 16:
+                h1doisReais.innerHTML = notas(2, 5) + " +<br>" + notas(2, 3) + "<br>OU";
+                h1cincoReais.innerHTML = notas(5, 2) + " + " + notas(2, 3) + "<br>OU";
+                h1dezReais.innerHTML = notas(10, 1) + " + " + notas(2, 3);
+                break;
+            case 18:
+                h1doisReais.innerHTML = notas(2, 5) + " +<br>" + notas(2, 4) + "<br>OU";
+                h1cincoReais.innerHTML = notas(5, 2) + " + " + notas(2, 4) + "<br>OU";
+                h1dezReais.innerHTML = notas(10, 1) + " + " + notas(2, 4);
+                break;
+            case 20:
+                h1doisReais.innerHTML = notas(2, 5) + " +<br>" + notas(2, 5) + "<br>OU";
+                h1cincoReais.innerHTML = notas(5, 4) + "<br>OU";
+                h1dezReais.innerHTML = notas(10, 2) + "<br>OU";
+                h1vinteReais.innerHTML = notas(20, 1)
+                break;
+        }
+    }
+
+
+    //Adiciona event listener para cada li do sistema
+    var lista = document.querySelectorAll(".lista")
+
+    lista.forEach((li) => {
+        li.addEventListener("click", function () {
+            // Exibe o modal com as informações da task
+            myModal.show()
+            var nomeTask = li.querySelector("strong").textContent
+            modal.querySelector("#titulo").textContent = nomeTask
+
+            var detalhe = li.querySelector("label").textContent
+            modal.querySelector(".modal-body").innerHTML = detalhe
+
+            //Caso já tenha sido finalizada, é feita a busca pelas informações da task
+            //e será exibido as informações da data de conclusão da task
+            if (li.querySelector("#done").classList.value == "") {
+                modal.querySelector("#doneButton").classList.add("displayNone")
+                for (let i = 0; i < dadosGeral.tasks.length; i++) {
+                    if (dadosGeral.tasks[i] == nomeTask) {
+
+                        var data = new Date(dadosGeral.datas[i])
+
+                        modal.querySelector(".modal-body").innerHTML += `<br><br>FINALIZADO EM: ${data.toLocaleDateString('pt-br', { weekday: 'long' }).toUpperCase()}, DIA ${data.toLocaleDateString('pt-br', { day: 'numeric' })} DE ${data.toLocaleDateString('pt-br', { month: 'long' }).toUpperCase()} DE ${data.toLocaleDateString('pt-br', { year: 'numeric' })} ÀS ${data.toLocaleTimeString('pt-br', { hour: 'numeric', minute: 'numeric', second: 'numeric', })}.`
+
+                    }
+                }
+            }
+            //E se não, o botão para finalizar a task será exibido
+            else {
+                modal.querySelector("#doneButton").classList.remove("displayNone")
+            }
+        })
+    })
+
+    //Função para conclir uma tarefa, busca pelo nome e chama a função do google apps scripts
+    function finalizarTarefa(e) {
+        var pai = e.parentNode
+        var task = pai.parentNode.querySelector("#titulo").textContent
+        google.script.run.withSuccessHandler(salvou).salvarTask(task)
+    }
+
+    //Função de callback para informar que os dados foram salvos
+    //também já atualiza o valor ganho e chama a chama get dados
+    //e co o callback a verificaConcluidos que ira marcar a task como finalizada
+    function salvou() {
+        alert("salvou")
+        let valor = parseInt(document.querySelector("#valor").textContent)
+        document.querySelector("#valor").textContent = valor + 2
+        google.script.run.withSuccessHandler(verificaConcluidos).getDados()
+    }
+</script>
