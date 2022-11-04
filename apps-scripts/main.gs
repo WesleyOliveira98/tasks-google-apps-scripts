@@ -15,7 +15,7 @@ function doGet(){
   //Também seta configurações da página e de exibição em xframes
   return template.evaluate()
     .setTitle("Tasks")
-    .setFaviconUrl("https://cdn-icons-png.flaticon.com/512/1950/1950630.png")
+    .setFaviconUrl("https://wesleyoliveira98.github.io/tasks-google-apps-scripts/img/icon.png")
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
 }
 
