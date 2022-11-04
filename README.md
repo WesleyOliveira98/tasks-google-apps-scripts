@@ -21,9 +21,9 @@
 </p>
 
 <h3>Tasks</h3>
-![image](https://user-images.githubusercontent.com/69807420/199863951-0c871a21-d935-41ab-9693-d609f5094b94.png)
-![image](https://user-images.githubusercontent.com/69807420/199864032-1f24a76f-f289-468b-ae8b-df353eed6371.png)
+<img src="https://user-images.githubusercontent.com/69807420/199863951-0c871a21-d935-41ab-9693-d609f5094b94.png" />
+<img src="https://user-images.githubusercontent.com/69807420/199864032-1f24a76f-f289-468b-ae8b-df353eed6371.png" />
 
 <h3>Dinheiro Ganho</h3>
 <p>Aqui mostramos o valor ganho de diferentes formas, ensinando como chegar nos mesmos valores com diferentes notas e combinações possiveis.</p>
-![image](https://user-images.githubusercontent.com/69807420/199864228-7448ab1c-9d8f-4782-957b-dcf6b4168e3b.png)
+<img src="https://user-images.githubusercontent.com/69807420/199864228-7448ab1c-9d8f-4782-957b-dcf6b4168e3b.png" />
